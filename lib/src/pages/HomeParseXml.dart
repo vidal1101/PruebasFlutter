@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:xml/xml.dart' as xml;
 import 'package:beta_app/src/models/facturaElectronica.dart';
+import 'package:xml/xml.dart' as xml;
 
 class HomeParseXml extends StatefulWidget {
   @override
@@ -8,11 +8,16 @@ class HomeParseXml extends StatefulWidget {
 }
 
 class _HomeParseXmlState extends State<HomeParseXml> {
+
+  /*
+  future en el cual se lee el xml en cache. y luego se parsea. 
+  se retorna una lista de objetos tipo FacturaElectronica
+  */
   Future<List<FacturaElectronica>> getFacturaFromXML(
       BuildContext context) async {
     String xmlString = await DefaultAssetBundle.of(context).loadString(
         "assets/data/ATV_eFAC_50614062100011662004700100002010000000002161165308.xml");
-        //print(xmlString.toString());
+    //print(xmlString.toString());
     var raw = xml.parse(xmlString);
     var elements = raw.findAllElements("FacturaElectronica");
     print(elements.toString());
@@ -25,10 +30,13 @@ class _HomeParseXmlState extends State<HomeParseXml> {
           ),
           element.findElements("NumeroConsecutivo").first.text,
           element.findElements("FechaEmision").first.text , 
-          element.findElements("Emisor").first.text.toString());
+          element.findElements("Emisor").first.text.toString(),
+          element.findElements("Receptor").first.text.toString());
     }).toList();
   }
 
+
+  // para pintar la data de muestra
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,7 +59,8 @@ class _HomeParseXmlState extends State<HomeParseXml> {
                           Text( "codigo Actividad: "+factura[index].codigoActividad.toString()),
                           Text("Clave: "+factura[index].clave.toString()),
                           Text("Fecha: "+factura[index].fecha.toString()),
-                          Text("Nombre: "+factura[index].nombre.toString()),
+                          Text("Nombre: "+factura[index].emisor.toString()),
+                          Text("Nombre: "+factura[index].receptor.toString()),
                         
                         ],
                       );
